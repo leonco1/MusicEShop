@@ -1,0 +1,63 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy container app to Azure Web App - kiii
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read #This is required for actions/checkout
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to container registry
+        uses: docker/login-action@v2
+        with:
+          registry: index.docker.io/
+          username: ${{ secrets.AZUREAPPSERVICE_CONTAINERUSERNAME_05A8F38D0CE245F6A639988D7E9B524B }}
+          password: ${{ secrets.AZUREAPPSERVICE_CONTAINERPASSWORD_9609E16187A645A58DDBAE3B9D110D90 }}
+
+      - name: Build and push container image to registry
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: index.docker.io/${{ secrets.AZUREAPPSERVICE_CONTAINERUSERNAME_05A8F38D0CE245F6A639988D7E9B524B }}/leonco1/musiceshop:${{ github.sha }}
+          file: ./Dockerfile
+
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write #This is required for requesting the JWT
+      contents: read #This is required for actions/checkout
+
+    needs: build
+    
+    steps:
+      
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_3AB0C58DD6C04C4D9B957930823113C8 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_60DAFC0521DC4BF5A5DDF5F132E02904 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_C13A97C5716746DCA6C33B5F889C6017 }}
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'kiii'
+          slot-name: 'Production'
+          images: 'index.docker.io/${{ secrets.AZUREAPPSERVICE_CONTAINERUSERNAME_05A8F38D0CE245F6A639988D7E9B524B }}/leonco1/musiceshop:${{ github.sha }}'
+          
