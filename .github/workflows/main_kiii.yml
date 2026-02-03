@@ -33,7 +33,7 @@ jobs:
         with:
           context: ./MusicEShopApplication
           push: true
-          tags: index.docker.io/${{ secrets.AZUREAPPSERVICE_CONTAINERUSERNAME_05A8F38D0CE245F6A639988D7E9B524B }}/leonco1/musiceshop:${{ github.sha }}
+          images: 'index.docker.io/${{ secrets.AZUREAPPSERVICE_CONTAINERUSERNAME_05A8F38D0CE245F6A639988D7E9B524B }}/musiceshop:${{ github.sha }}'
           file: ./MusicEShopApplication/Dockerfile
 
   deploy:
