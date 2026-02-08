@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mssql-config
+  namespace: musiceshop
+  labels:
+    app: musiceshop
+    component: database
+data:
+  ACCEPT_EULA: "Y"
+  MSSQL_PID: "Express"
