@@ -29,5 +29,4 @@ EXPOSE 8080
 
 ENV ASPNETCORE_URLS=http://+:8080
 
-# Run the application
 ENTRYPOINT ["dotnet", "MusicEShop.Web.dll"]

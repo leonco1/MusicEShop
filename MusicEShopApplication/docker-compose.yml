@@ -1,7 +1,6 @@
 services:
   musiceshop:
-    # Replace 'yourusername' with your Docker Hub username
-    image: yourusername/musiceshop:latest
+    image: leonco1/musiceshop:latest
     ports:
       - "8080:8080"
     env_file:
